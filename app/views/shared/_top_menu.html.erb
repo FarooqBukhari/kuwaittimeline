@@ -1,0 +1,21 @@
+<nav class="nav">
+  <ul class="">
+    <% if I18n.locale == :ar %>
+       <li class="nav-item">
+        <%= link_to "English", {controller: controller_name, action: action_name, locale: :en} , class: "nav-link" %>
+      </li>
+    <% end %>
+    <% if I18n.locale == :en %>
+        <li class="nav-item">
+          <%= link_to "عربي", {controller: controller_name, action: action_name, locale: :ar} , class: "nav-link" %>
+      </li>
+    <% end %>
+    <li class="nav-item">
+      <%= link_to t('about'), about_path, class: "nav-link" %>
+    </li>
+    </li>
+    <li class="nav-item">
+      <%= link_to t('new_post'), new_post_path, class: "nav-link" %>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,105 @@
+<%= form_with(model: post, :multipart => true) do |form| %>
+  <% if post.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+        <% post.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <form>
+    <div class="form-group">
+      <%= form.label :date, "Date / التاريخ" %>
+      <%= form.date_field :date, class: "form-control", placeholder: "العنوان" %>
+    </div>
+    <div class="form-group">
+      <div class="pull-left">
+        <%= form.label :hide_day, 'Hide Day / إخفاء اليوم <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span>'.html_safe %>
+        <%= form.check_box :hide_day %>
+      </div>
+      <div class="pull-right">
+        <%= form.label :hide_month, 'Hide Month / إخفاء الشهر <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span>'.html_safe %>
+        <%= form.check_box :hide_month %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= form.label :subject_ar, "Title / العنوان" %>
+      <%= form.text_field :subject_ar, class: "form-control", placeholder: "العنوان" %>
+      <%= form.text_field :subject_en, class: "form-control", placeholder: "Title" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :description_ar, 'Summary / الملخص <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span>'.html_safe %>
+      <%= form.text_area :description_ar, class: "form-control", placeholder: "الملخص" %>
+      <%= form.text_area :description_en, class: "form-control", placeholder: "Description" %>
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Categories / اقسام 
+        <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span>
+      </label>
+      <br>
+      <% if I18n.locale == :ar %>
+        <%#= form.collection_check_boxes :category_ids, Category.all, :id, :name_ar, include_blanks: false, include_hidden: false %>
+        <%= form.collection_check_boxes(:category_ids, Category.all, :id, :name_ar) do |b| %>
+          <div class="form-check form-check-inline">
+            <%= b.label class:"label-checkbox" do %>
+              <%=b.check_box + b.text%>
+            <% end %>
+          </div>
+        <%end%>
+      <% else %>
+        <%#= form.collection_check_boxes :category_ids, Category.all, :id, :name_en, include_blanks: false, include_hidden: false %>
+        <%= form.collection_check_boxes(:category_ids, Category.all, :id, :name_en) do |b| %>
+          <div class="form-check form-check-inline">
+            <%= b.label class:"label-checkbox" do %>
+              <%=b.check_box + b.text%>
+            <% end %>
+          </div>
+        <%end%>
+      <% end %>
+    </div>
+    <div class="form-group">
+      <%= form.label :video_url, "Video Url / رابط الفيديو" %>
+      <%= form.text_field :video_url, class: "form-control", placeholder: "رابط الفيديو" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :book, "Book References / مراجع الكتاب" %>
+      <%= form.text_field :book, class: "form-control", placeholder: "مراجع الكتاب" %>
+    </div>
+    <%= form.fields_for :references, @reference do |ff| %>
+      <div class="form-group">
+        <%= ff.label :reference_url, "References / مراجع" %>
+        <%= ff.text_field :reference_url, class: "form-control", placeholder: "مراجع" %>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <label for="picture">Cover Picture / صورة <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span></label><br>
+      <%= form.file_field :picture, class:"form-control-file", id:"picture", accept: 'image/png,image/jpeg' %>
+      <%= link_to "Reset Image", "javascript:void(0)", class: "btn btn-primary image_reset_btn", id: "cover_image_reset" %>
+      <br>
+      <label for="gallery_photoes">Gallery / صالة عرض <span style="margin: 0 25px;color: #727272;">(optional/اختياري)</span></label><br>
+      <%= form.file_field :gallery_photoes, class:"form-control-file", id:"gallery_photoes", accept: 'image/png,image/jpeg', multiple: true %>
+      <%= link_to "Reset Image", "javascript:void(0)", class: "btn btn-primary image_reset_btn", id: "galary_image_reset" %>
+      <br>
+      <br>
+      <%= recaptcha_tags %>
+      <%= form.submit "Add / أضف", class: "btn btn-primary" %>
+    </div>
+  </form>
+<% end %>
+<style>
+  .label-checkbox input {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+</style>
+ <script>
+  $("#cover_image_reset").on("click", function(){
+      $("#picture").val("");
+  });
+    $("#galary_image_reset").on("click", function(){
+      $("#gallery_photoes").val("");
+  });
+</script>

@@ -1,0 +1,115 @@
+  <main class="container" style="max-width: 700px;">
+  <div class="row fullpost">
+    <div style="color:#0077B6;padding: 0;"><%= format_date(@post) %></div>
+    <br>
+    <h3><%= @post.subject_en %></h3>
+    <% if @post.picture.attached? %>
+      <div class="row">
+          <%= image_tag(@post.picture, class:"img-responsive", alt: @post.subject_en) %>
+          <div class="d-flex justify-content-left">
+            <%= link_to 'Remove Image', remove_attachment_path(id:  @post.id, type: "picture"),  class: "btn btn-primary action-btns", 
+                  method: :delete,
+                  data: { confirm: 'Are you sure?' } if user_signed_in? %>
+          </div>
+      </div>
+    <% end %>
+
+    <%= @post.description_en %>
+    <br>
+    <br>
+    <br>
+    <% if @post.video_url.present? || @post.gallery_photoes.any? %>
+      <div class="gap-2 d-md-block" style="padding: 0; margin: 10px 0;">
+        <h5><%= t('gallery') %></h5>
+        <% if @post.video_url.present? %>
+          <div class="col-12">
+            <iframe width="100%" height="400" src="<%= @post.video_url %>">
+            </iframe>
+          </div>
+        <% end %>
+      </div>
+      <div class="gap-2 d-md-block" style="padding: 0; margin: 10px 0;">
+        <div class="row text-center text-lg-start">
+          <% @post.gallery_photoes.each do |gallery_photo| %>
+            <div class="col-md-4 col-sm-12">
+              <div class="d-block mb-4 h-100">
+                <div class="gallery-photo" style="background-image: url(<%= rails_blob_url(gallery_photo) %>)"></div>
+              </div>
+            </div>
+          <% end %>
+          <div class="d-flex justify-content-left">
+            <%= link_to 'Remove Image', remove_attachment_url(id: @post.id, type: "gallery"), class: "btn btn-primary action-btns", method: :delete, data: { confirm: 'Are you sure?' } if @post.gallery_photoes.present? && user_signed_in?  %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="gap-2 d-md-block" style="padding: 0; margin: 10px 0;">
+      <% @post.categories.each do |category| %>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick='filter(<%= category.id %>);'><%= category.name_en %></button>
+      <% end %>
+      <% @post.tags.each do |tag| %>
+        <button type="button" class="btn btn-outline-primary btn-sm" style="background-color: #ffffff;"  onclick='fiter_tag(<%= tag.id %>);' ><%= tag.name_ar %></button>
+      <% end %>
+      <br>
+      <% if @post.book? %>
+        <%= link_to "javascript:void(0)", class:"a-r", onclick:"book_alert('#{@post.book}')" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book book" viewBox="0 0 16 16">
+            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+          </svg>
+        <% end %>
+      <% end %>
+      <%= link_to increment_flag_path(@post.id), remote: true, method: :post, class:"a-r", onclick:"alert('Event will be reviewed, thank you')" do %>
+        <svg id="en-flag" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag flag" viewBox="0 0 16 16">
+          <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21.294 21.294 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21.317 21.317 0 0 0 14 7.655V1.222z"></path>
+        </svg>
+      <% end %>
+      <% @post.references.each do |reference| %>
+        <a href="<%= reference.reference_url %>" class="a-r">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"></path>
+          </svg>
+        </a>
+      <% end %>
+      <span class="fullpost-span-l"><%= @post.views %> <%=t('views') %></span>
+    </div>
+    <div class="row mt-3">
+      <% if authenticate_admin_role %>
+        <div class="col-md-12">
+          <div class="d-flex justify-content-center">
+            <%= link_to 'Edit', edit_post_path(@post), class:"btn btn-primary action-btns" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <% if @related_posts.count > 0 %>
+      <div class="row">
+        <h5 style="padding: 50px 0 10px 0;"><%= t('related_events') %></h5>
+        <% @related_posts.each do |post| %>
+          <div class="col-12 col-md-4">
+            <div class="relatedPost">
+              <div class="row"><span> <%= format_date(post)%> </span></div>
+              <div class="row"><a href="<%= post_path(post.id) %>"> <%= post.subject_en %> </a></div>
+              <div class="row">
+                <% if post.picture.attached? %>
+                  <%= image_tag(post.picture, class:"img-responsive", alt: @post.subject_en) %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+</main>
+<script>
+  function filter(category_id) {
+    location.replace(`${window.location.href.split('/')[0]}/?${window.location.href.split('?')[1].split('&')[0]}&filters[with_category]=${category_id}`);
+  }
+  function book_alert(book){
+    alert(book)
+  }
+  function fiter_tag(tag_id){
+    location.replace(`${window.location.href.split('/')[0]}/?${window.location.href.split('?')[1].split('&')[0]}&tag=${tag_id}`);
+  }
+</script>

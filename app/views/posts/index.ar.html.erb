@@ -1,0 +1,32 @@
+<% if @happened_today.any? %>
+  <br>
+  <h2><%= t('happened_today') %>:</h2>
+  <br>
+  <div id="happened-today-posts">
+    <% @happened_today.each do |post| %>
+      <%= render "posts/post_summary", post: post %>
+      <% if post != @happened_today.last %>
+        <div class="v-r"></div>
+      <% end %>
+    <% end %>
+  </div>
+  <br>
+  <br>
+<% end %>
+<br>
+<h2><%= "#{t('timeline')}:" if @happened_today.any? %></h2>
+<br>
+<%= render "shared/search_box" %>
+<div class="v-r"></div>
+<div id="posts">
+  <% @posts.each do |post| %>
+    <%= render "posts/post_summary", post: post %>
+    <% if post != @posts.last %>
+      <div class="v-r"></div>
+    <% end %>
+  <% end %>
+</div>
+<div class="mb-1">&nbsp;</div>
+<div class="d-flex justify-content-center">
+  <%== pagy_bootstrap_nav(@pagy) %>
+</div>

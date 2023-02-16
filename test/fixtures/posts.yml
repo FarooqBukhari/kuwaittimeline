@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  category: one
+  subject_ar: MyString
+  subject_en: MyString
+  description_ar: MyText
+  description_en: MyText
+  reference: MyString
+  timestamp: 2021-07-23 23:07:09
+  date: 2021-07-23
+  flag: 1
+  status: MyString
+  views: 1
+
+two:
+  category: two
+  subject_ar: MyString
+  subject_en: MyString
+  description_ar: MyText
+  description_en: MyText
+  reference: MyString
+  timestamp: 2021-07-23 23:07:09
+  date: 2021-07-23
+  flag: 1
+  status: MyString
+  views: 1

@@ -1,0 +1,179 @@
+<div class="row">
+  <div class="btn-group">
+    <input class="form-control" type="text" placeholder="<%= t('welcome') %>" value="<%= @search_text ? @search_text : "" %>" aria-label="Search" id="search-text">
+    <button type="button" style="margin: 0px 10px;" onclick="filter()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+        viewBox="0 0 16 16">
+        <path
+          d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+      </svg>
+    </button>
+    <button type="button" style="margin: 0px 10px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel"
+        viewBox="0 0 16 16">
+        <path
+          d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+      </svg>
+    </button>
+    <ul class="dropdown-menu">
+        <li class="text-center border">Sort</li>
+        <li>
+          <a class="dropdown-item" href="javascript:;" onclick="sort('asc');">
+           <%= t('ascending') %>
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:;" onclick="sort('desc');">
+           <%= t('descending') %> 
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:;" onclick="params_filter('created_at', 'true');('created_at');">
+           <%= t('created_at') %> 
+          </a>
+        </li>
+      <li class="text-center border">Categories</li>
+
+      <% @categories.each do |category| %>
+        <li><a class="dropdown-item" href="javascript:;" onclick="filter(<%= category.id %>);">
+          <% if I18n.locale == :ar %>
+            <%= category.name_ar %>
+          <% elsif  I18n.locale == :en %>
+            <%= category.name_en %>
+          <% end %>
+        </a>
+        </li>
+      <% end %>
+    </ul>
+      <button type="button" style="margin: 0px 10px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+          <path d="M6.445 11.688V6.354h-.633A12.6 12.6 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23z"/>
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+        </svg>
+    </button>
+    <ul class="dropdown-menu">
+       <%= form_with url: posts_path, method: :get do |f| %>
+          <li><%= t('from') %></li>
+          <li><%= f.date_field :start_date %></li>
+          <li><%= t('to') %></li>
+          <li><%= f.date_field :end_date %></li>
+          <li class="text-center mt-2">
+          <%= f.submit t('submit'), class: "btn btn-primary image_reset_btn ml-0 mr-0" %>
+          </li>
+        <% end %>
+    </ul>
+  </div>
+</div>
+
+<script>
+  function filter(category_id=null) {
+    console.log("called")
+    let search_text = document.getElementById("search-text").value;
+    let url = "";
+    if(window.location.href.includes("with_category") && category_id === null){
+      category_id = window.location.href.split('?')[1].split('&')[1].split('=')[1]
+    }
+    if (category_id !== null || search_text !== "") {
+      if (category_id === null){
+        url = `${window.location.href.split('?')[0]}?${window.location.href.split('?')[1] ? window.location.href.split('?')[1].split('&')[0] : ''}&filters[with_text]=${search_text}`;
+      }
+      else if (search_text === "") {
+        url = `${window.location.href.split('?')[0]}?${window.location.href.split('?')[1] ? window.location.href.split('?')[1].split('&')[0] : ''}&filters[with_category]=${category_id}`;
+      }
+      else {
+        url = `${window.location.href.split('?')[0]}?${window.location.href.split('?')[1] ? window.location.href.split('?')[1].split('&')[0] : ''}&filters[with_filter_category]=${category_id}&filters[with_text]=${search_text}`;
+      }
+      location.replace(url);
+    }
+  }
+
+  function sort(direction) {
+    debugger
+    let url = window.location.href;
+    if(url.split("?sort").length > 1) {
+      let replace = url.split('?sort')[0] + `?sort=${direction}`;
+      if (url.split("?sort")[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('?sort')[1].substring(window.location.href.split('?sort')[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else if (url.split("&sort").length > 1) {
+      let replace = url.split('&sort')[0]+ `&sort=${direction}`;
+      if (url.split("&sort")[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('&sort')[1].substring(window.location.href.split('&sort')[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else {
+      if(url.indexOf("?") == -1) {
+         location.replace(`${url}?sort=${direction}`);
+      } else {
+        location.replace(`${url}&sort=${direction}`);
+      }
+    }
+  }
+  function tag(tag_id) {
+    debugger
+    let url = window.location.href;
+    if(url.split("?tag").length > 1) {
+      let replace = url.split('?tag')[0] + `?tag=${tag_id}`;
+      if (url.split("?tag")[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('?tag')[1].substring(window.location.href.split('?tag')[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else if (url.split("&tag").length > 1) {
+      
+      let replace = url.split('&tag')[0]+ `&tag=${tag_id}`;
+      if (url.split("&tag")[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('&tag')[1].substring(window.location.href.split('&tag')[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else {
+      if(url.indexOf("?") == -1) {
+         location.replace(`${url}?tag=${tag_id}`);
+      } else {
+        location.replace(`${url}&tag=${tag_id}`);
+      }
+    }
+  }
+  function by_date(){
+    start_date = $("#start_date").val();
+    start_date = $("#end_date").val();
+  }
+
+  function params_filter(param_key, param_value) {
+    debugger
+    let url = window.location.href;
+    if(url.split("?"+ param_key).length > 1) {
+      let replace = url.split('?'+param_key)[0] + `?${param_key}=${param_value}`;
+      if (url.split("?"+param_key)[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('?'+param_key)[1].substring(window.location.href.split('?'+param_key)[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else if (url.split("&"+param_key).length > 1) {
+      
+      let replace = url.split('&'+param_key)[0]+ `&${param_key}=${param_value}`;
+      if (url.split("&"+param_key)[1].indexOf("&") != -1)
+        {
+          replace += window.location.href.split('&'+param_key)[1].substring(window.location.href.split('&'+param_key)[1].indexOf("&"));
+        }
+      location.replace(replace);
+    }
+    else {
+      if(url.indexOf("?") == -1) {
+         location.replace(`${url}?${param_key}=${param_value}`);
+      } else {
+        location.replace(`${url}&${param_key}=${param_value}`);
+      }
+    }
+  }
+
+</script>

@@ -1,0 +1,21 @@
+<div class="row post">
+  <div class="col-1 date date-r">
+    <%= format_date(post) %>
+  </div>
+  <div class="col-7 col-md-10">
+    <div class="row"><a href="<%= post_path post.id %>"><%= post.subject_ar %></a></div>
+    <% if post.description_ar.present? %>
+      <div class="row"><span><%= post.description_ar.truncate(300, separator: ' ', omission: '... (تكمله)') %></span></div>
+    <% end %>
+    <div class="row">
+      <% if post.picture.attached? %>
+        <img src="<%= url_for(post.picture) %>" class="img-responsive" alt = <%= post.subject_en %> >
+      <% end %>
+      <div class="gap-2 d-md-block" style="padding-right: 0;">
+        <% post.categories.each do |c| %>
+          <button onclick='filter(<%= c.id %>);' type="button" class="btn btn-outline-primary btn-sm"><%= c.name_ar %></button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

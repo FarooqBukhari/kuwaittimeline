@@ -1,0 +1,52 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "Hello world"
+  welcome: "Welcome"
+  new_post: "New Event"
+  about: "About"
+  about_details: "Kuwait Timeline is a voluntary site that aims to document local events in Kuwait in an organized time context to enrich knowledge and disseminate accurate information"
+  url: '<%= image_tag("logoen.png", class: "center-image", height: "100") %>'
+  about_follow: "Follow Us / Reach Us"
+  direction: "ltr"
+  copyrights: "Copyright Reserved"
+  views: "Views"
+  related_events: "Related Events"
+  happened_today: "Happened Today"
+  timeline: "Timeline"
+  gallery: "Gallery"
+  ascending: "Ascending"
+  descending: "Decending"
+  created_at: "Newly Added"
+  from: "from"
+  to: "to"
+  submit: "Submit"

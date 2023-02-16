@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html >
+  
+  <%= render "shared/html_header" %>
+
+  <body dir="<%= t('direction') %>">
+
+    <%= render "shared/top_header" %>
+
+    <main class="container" style="min-height: 400px">
+
+      <%= yield %>
+
+    </main>
+
+    <%= render "shared/footer" %>
+  </body>
+
+</html>
